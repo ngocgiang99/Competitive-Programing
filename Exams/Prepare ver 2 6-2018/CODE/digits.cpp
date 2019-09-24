@@ -16,22 +16,44 @@ const int N = 5000;
 const double pi = acos(-1.0);
 const double ep = 1e-6;
 
-int n,k;
-int p[10];
-ll ans;
-vector<int> ve;
+int n, m;
+long long f[19][18*18 + 3][100];
 
-void pt(int x)
-{
-    int cnt = 0;
-    while (x)
-    {
-        int r = x%10;
-        ve.pb(-(9-r)*p[cnt]);
-        x /= 10;
-        ++cnt;
-    }
+void input() {
+    cin>> n >> m;
 }
+
+void prepare() {
+    FORE(i,0,n)
+    FORE(j,0,18*n+1)
+    FORE(r,0,99) f[i][j][r] = -1;
+}
+
+int sumDigits(int x) {
+    int res = 0;
+    while(x) {
+        res += x%10;
+        x /= 10;
+    }
+    return res;
+}
+
+long long calc(int i, int s, int q) {
+    if (f[i][s + 9*n][q] != -1) return f[i][s + 9*n][q];
+    if (i == n) return (s - sumDigits(q) == 0);
+    long long res = 0;
+    FORE(t, 0 , 9)
+    {
+        int qNew = t*m + q;
+        res += calc(i+1, s + t - qNew%10, qNew/10);
+    }
+    return f[i][s + 9*n][q] = res;
+}
+
+void process() {
+    cout<< calc(0, 0, 0) <<endl;
+}
+
 
 int main()
 {
@@ -40,21 +62,14 @@ int main()
     freopen("digits.inp", "r", stdin);
     freopen("digits.out", "w", stdout);
     #endif
-    p[0] = 1;
-    FORE(i,1,9)
-    p[i] = p[i-1]*10;
-    ve.pb(0);
-    cin>>n>>k;
-    FORE(i,1,n)
-    {
-        int a;
-        cin>>a;
-        pt(a);
+    
+    int t;
+    cin>> t;
+    while(t--) {
+        input();
+        prepare();
+        process();
     }
-    sort(ve.begin(),ve.end());
-    if (k > ve.size()) k = ve.size();
-    FOR(i,0,k)
-    ans -= 1ll*ve[i];
-    cout<<ans;
+
     return 0;
 }

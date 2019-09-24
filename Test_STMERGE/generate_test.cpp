@@ -39,7 +39,6 @@ string toString(int x) {
 
 void createInput(int ql, int qh, int ml, int mh, int nl, int nh) {
     ofstream fo((namefile + ".inp").c_str());
-
     q = Rand(ql, qh);
     fo<< q <<endl;
 
